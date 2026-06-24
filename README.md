@@ -97,5 +97,5 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 
 ---
 <div align="center">
-  <i>Developed with ❤️ by the Octave Cluster Crew</i>
+  <i>Developed with ❤️ by Rahul Kushwaha</i>
 </div>
