@@ -15,6 +15,18 @@ html {
   color: white;
 }
 
+/* Tabular figures for countdown timers */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Focus visible for keyboard navigation */
+button:focus-visible {
+  outline: 2px solid rgba(249, 115, 22, 0.6);
+  outline-offset: 2px;
+  border-radius: 9999px;
+}
+
 /* Custom Scrollbar for a premium feel */
 ::-webkit-scrollbar {
   width: 8px;
@@ -32,4 +44,18 @@ html {
 
 ::-webkit-scrollbar-thumb:hover {
   background: linear-gradient(to bottom, #ea580c, #7e22ce);
+}
+
+/* Hide default summary marker */
+details summary::-webkit-details-marker {
+  display: none;
+}
+
+/* No-scrollbar utility */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
