@@ -1,5 +1,9 @@
 import type { Metadata, Viewport } from "next";
+import { Inter, Outfit } from "next/font/google";
 import "./globals.css";
+
+const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
+const outfit = Outfit({ subsets: ["latin"], variable: "--font-outfit" });
 
 export const viewport: Viewport = {
   themeColor: '#0A0A0A',
@@ -37,8 +41,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className="antialiased" suppressHydrationWarning>
+    <html lang="en" className={`${inter.variable} ${outfit.variable}`}>
+      <body className="antialiased font-sans bg-[#0A0A0A] text-white selection:bg-purple-500/30 overflow-x-hidden" suppressHydrationWarning>
         {children}
       </body>
     </html>
