@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback, useRef } from 'react';
 import { motion, AnimatePresence, useScroll, useTransform, useSpring } from 'motion/react';
 import Image from 'next/image';
-import { ArrowLeft, Crosshair, MapPin, Calendar, Trophy, FileText, CheckCircle, Flame, Zap, Instagram, Ticket, Share2, Users, ChevronDown, ChevronRight, AlertTriangle } from 'lucide-react';
+import { ArrowLeft, Crosshair, MapPin, Calendar, Trophy, FileText, CheckCircle, Flame, Zap, Instagram, Ticket, Share2, Users, ChevronDown, ChevronRight, AlertTriangle, Gamepad2, Lightbulb, MessageSquare, Mail, Rocket } from 'lucide-react';
 import Countdown from './components/Countdown';
 
 const Tiktok = ({ className }: { className?: string }) => (
@@ -61,9 +61,18 @@ const fadeUp: any = {
 
 export default function Home() {
   const [stats, setStats] = useState<Stats | null>(null);
-  const [activeTab, setActiveTab] = useState<'overview' | 'pubg' | 'ai' | 'faq' | 'sponsors'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'faq' | 'sponsors'>('overview');
   const [copied, setCopied] = useState(false);
   const [showScrollTop, setShowScrollTop] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // Simulate loading for the splash screen
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 2000);
+    return () => clearTimeout(timer);
+  }, []);
 
   // Scroll progress and parallax
   const { scrollYProgress, scrollY } = useScroll();
@@ -92,9 +101,9 @@ export default function Home() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  const tabs: Array<'overview' | 'pubg' | 'ai' | 'faq' | 'sponsors'> = ['overview', 'pubg', 'ai', 'faq', 'sponsors'];
+  const tabs: Array<'overview' | 'faq' | 'sponsors'> = ['overview', 'faq', 'sponsors'];
 
-  const handleTabChange = useCallback((tab: 'overview' | 'pubg' | 'ai' | 'faq' | 'sponsors') => {
+  const handleTabChange = useCallback((tab: 'overview' | 'faq' | 'sponsors') => {
     setActiveTab(tab);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
@@ -199,15 +208,82 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-[#0A0A0A] text-white selection:bg-orange-500/30 overflow-x-hidden font-sans">
-      
-      {/* Scroll Progress Bar */}
-      <motion.div
-        className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-500 via-amber-400 to-purple-500 origin-left z-[100]"
-        style={{ scaleX }}
-      />
-      
+
+      <AnimatePresence>
+        {isLoading && (
+          <motion.div
+            key="loader"
+            initial={{ opacity: 1 }}
+            exit={{ opacity: 0, scale: 0.95, filter: "blur(10px)" }}
+            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+            className="fixed inset-0 z-[9999] bg-[#0A0A0A] flex flex-col items-center justify-center overflow-hidden"
+          >
+            {/* Elegant Background Grid */}
+            <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:50px_50px] opacity-20" />
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
+              className="relative z-10 flex flex-col items-center"
+            >
+              {/* Image Container with elegant outer pulse */}
+              <div className="relative mb-8">
+                {/* Outer animating ring */}
+                <motion.div
+                  className="absolute inset-[-15px] rounded-full border border-orange-500/30"
+                  animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0, 0.3] }}
+                  transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                />
+
+                <div className="relative w-28 h-28 rounded-full overflow-hidden border border-white/10 bg-[#0A0A0A] shadow-[0_0_40px_rgba(249,115,22,0.15)] flex items-center justify-center">
+                  <Image
+                    src="/logo.png"
+                    alt="The Octave Alliance Logo"
+                    fill
+                    className="object-cover scale-105"
+                    priority
+                  />
+                </div>
+              </div>
+
+              <div className="flex flex-col items-center gap-2">
+                <h1 className="text-2xl md:text-4xl font-display font-black tracking-[0.2em] uppercase text-white mb-1">
+                  The Octave Alliance
+                </h1>
+                <div className="flex items-center gap-2 opacity-50">
+                  <div className="h-px w-8 bg-white"></div>
+                  <p className="text-[10px] md:text-xs uppercase tracking-widest font-mono">
+                    By Runway Career Connect
+                  </p>
+                  <div className="h-px w-8 bg-white"></div>
+                </div>
+              </div>
+
+              {/* Minimal Progress indicator */}
+              <div className="mt-12 w-64 h-[2px] bg-white/5 relative overflow-hidden rounded-full">
+                <motion.div
+                  initial={{ x: "-100%" }}
+                  animate={{ x: "0%" }}
+                  transition={{ duration: 2, ease: "easeInOut" }}
+                  className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-orange-500 to-orange-500 rounded-full"
+                />
+              </div>
+
+              <motion.div
+                animate={{ opacity: [0.3, 1, 0.3] }}
+                transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
+                className="mt-4 text-[10px] text-white/30 uppercase tracking-[0.3em] font-mono"
+              >
+                Loading Experience
+              </motion.div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Interactive Cursor Glow (Desktop Only) */}
-      <div 
+      <div
         className="pointer-events-none fixed inset-0 z-50 transition-opacity duration-300 hidden lg:block"
         style={{
           background: `radial-gradient(600px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(255,255,255,0.06), transparent 40%)`
@@ -246,18 +322,25 @@ export default function Home() {
         <header className="fixed top-0 left-0 right-0 z-50 bg-[#0A0A0A]/50 backdrop-blur-2xl border-b border-white/10 shadow-[0_4px_30px_rgba(0,0,0,0.5)]">
           <div className="max-w-7xl mx-auto px-4 md:px-12 h-16 md:h-20 flex items-center justify-between">
             <div className="flex items-center justify-between w-full md:w-auto h-full">
-              <div className="flex items-center gap-3 cursor-pointer" onClick={() => handleTabChange('overview')}>
-                <Image
-                  src="/logo.png"
-                  alt="Runway Career Connect Logo"
-                  width={36}
-                  height={36}
-                  className="w-7 h-7 md:w-9 md:h-9 rounded-lg shrink-0"
-                  priority
-                />
-                <span className="text-sm md:text-xl font-display font-black tracking-tighter bg-gradient-to-r from-white to-white/60 bg-clip-text text-transparent underline underline-offset-4 decoration-orange-500 whitespace-nowrap drop-shadow-md">
-                  RUNWAY CAREER CONNECT
-                </span>
+              <div className="flex flex-col justify-center">
+                <div className="flex items-center gap-3 cursor-pointer" onClick={() => handleTabChange('overview')}>
+                  <Image
+                    src="/logo.png"
+                    alt="The Octave Alliance Logo"
+                    width={36}
+                    height={36}
+                    className="w-7 h-7 md:w-9 md:h-9 rounded-full shrink-0 overflow-hidden object-cover"
+                    priority
+                  />
+                  <div className="flex flex-col">
+                    <span className="text-sm md:text-xl font-display font-black tracking-tighter bg-gradient-to-r from-white to-white/60 bg-clip-text text-transparent underline underline-offset-4 decoration-orange-500 whitespace-nowrap drop-shadow-md leading-none">
+                      THE OCTAVE ALLIANCE
+                    </span>
+                    <a href="https://www.runwaycareerconnect.com" target="_blank" rel="noopener noreferrer" className="text-[8px] md:text-[10px] text-white/50 uppercase tracking-widest font-bold mt-1.5 hover:text-orange-400 transition-colors leading-none hidden md:block">
+                      By Runway Career Connect
+                    </a>
+                  </div>
+                </div>
               </div>
 
               {/* Share Button (Mobile) */}
@@ -275,64 +358,47 @@ export default function Home() {
             <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-[#0A0A0A]/50 to-transparent pointer-events-none md:hidden z-10" />
             <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-[#0A0A0A]/50 to-transparent pointer-events-none md:hidden z-10" />
             <nav className="flex-1 md:flex-none px-4 md:px-0 flex items-center gap-2 md:gap-4 overflow-x-auto no-scrollbar border-t md:border-none border-white/5 pt-3 pb-4 md:py-0 text-xs md:text-sm font-medium tracking-widest text-white/50 whitespace-nowrap">
-            <button
-              onClick={() => handleTabChange('overview')}
-              className={`relative px-4 py-2 transition-colors uppercase z-10 rounded-full ${activeTab === 'overview' ? 'text-white font-bold' : 'hover:text-white'}`}
-            >
-              Overview
-              {activeTab === 'overview' && (
-                <motion.div layoutId="nav-indicator" className="absolute inset-0 bg-white/20 rounded-full -z-10" />
-              )}
-            </button>
-            <button
-              onClick={() => handleTabChange('pubg')}
-              className={`relative px-4 py-2 transition-colors uppercase z-10 rounded-full ${activeTab === 'pubg' ? 'text-orange-400 font-bold' : 'hover:text-orange-400'}`}
-            >
-              PUBG Grid
-              {activeTab === 'pubg' && (
-                <motion.div layoutId="nav-indicator" className="absolute inset-0 bg-orange-500/20 rounded-full -z-10" />
-              )}
-            </button>
-            <button
-              onClick={() => handleTabChange('ai')}
-              className={`relative px-4 py-2 transition-colors uppercase z-10 rounded-full ${activeTab === 'ai' ? 'text-purple-400 font-bold' : 'hover:text-purple-400'}`}
-            >
-              AI Workshop
-              {activeTab === 'ai' && (
-                <motion.div layoutId="nav-indicator" className="absolute inset-0 bg-purple-500/20 rounded-full -z-10" />
-              )}
-            </button>
-            <button
-              onClick={() => handleTabChange('faq')}
-              className={`relative px-4 py-2 transition-colors uppercase z-10 rounded-full ${activeTab === 'faq' ? 'text-blue-400 font-bold' : 'hover:text-blue-400'}`}
-            >
-              FAQ
-              {activeTab === 'faq' && (
-                <motion.div layoutId="nav-indicator" className="absolute inset-0 bg-blue-500/20 rounded-full -z-10" />
-              )}
-            </button>
-            <button
-              onClick={() => handleTabChange('sponsors')}
-              className={`relative px-4 py-2 transition-colors uppercase z-10 rounded-full ${activeTab === 'sponsors' ? 'text-green-400 font-bold' : 'hover:text-green-400'}`}
-            >
-              Sponsors
-              {activeTab === 'sponsors' && (
-                <motion.div layoutId="nav-indicator" className="absolute inset-0 bg-green-500/20 rounded-full -z-10" />
-              )}
-            </button>
+              <button
+                onClick={() => handleTabChange('overview')}
+                className={`relative px-4 py-2 transition-colors uppercase z-10 rounded-full ${activeTab === 'overview' ? 'text-white font-bold' : 'hover:text-white'}`}
+              >
+                Overview
+                {activeTab === 'overview' && (
+                  <motion.div layoutId="nav-indicator" className="absolute inset-0 bg-white/20 rounded-full -z-10" />
+                )}
+              </button>
 
-            {/* Share Button (Desktop) */}
-            <button
-              onClick={handleShare}
-              className="hidden md:flex items-center gap-2 px-4 py-2 ml-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 text-white transition-all shadow-lg"
-            >
-              {copied ? (
-                <><CheckCircle className="w-4 h-4 text-green-400" /> <span className="text-green-400">Copied!</span></>
-              ) : (
-                <><Share2 className="w-4 h-4" /> <span>Share</span></>
-              )}
-            </button>
-          </nav>
+              <button
+                onClick={() => handleTabChange('faq')}
+                className={`relative px-4 py-2 transition-colors uppercase z-10 rounded-full ${activeTab === 'faq' ? 'text-blue-400 font-bold' : 'hover:text-blue-400'}`}
+              >
+                FAQ
+                {activeTab === 'faq' && (
+                  <motion.div layoutId="nav-indicator" className="absolute inset-0 bg-blue-500/20 rounded-full -z-10" />
+                )}
+              </button>
+              <button
+                onClick={() => handleTabChange('sponsors')}
+                className={`relative px-4 py-2 transition-colors uppercase z-10 rounded-full ${activeTab === 'sponsors' ? 'text-green-400 font-bold' : 'hover:text-green-400'}`}
+              >
+                Sponsors
+                {activeTab === 'sponsors' && (
+                  <motion.div layoutId="nav-indicator" className="absolute inset-0 bg-green-500/20 rounded-full -z-10" />
+                )}
+              </button>
+
+              {/* Share Button (Desktop) */}
+              <button
+                onClick={handleShare}
+                className="hidden md:flex items-center gap-2 px-4 py-2 ml-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 text-white transition-all shadow-lg"
+              >
+                {copied ? (
+                  <><CheckCircle className="w-4 h-4 text-green-400" /> <span className="text-green-400">Copied!</span></>
+                ) : (
+                  <><Share2 className="w-4 h-4" /> <span>Share</span></>
+                )}
+              </button>
+            </nav>
           </div>
         </header>
 
@@ -376,11 +442,11 @@ export default function Home() {
                     </div>
                     <motion.div style={{ y: heroY, opacity: heroOpacity }}>
                       <h1 className="text-[2.5rem] leading-[1.05] md:leading-[1.1] md:text-7xl font-display font-black tracking-tighter mb-4 md:mb-6 drop-shadow-2xl">
-                        ELEVATE YOUR SKILLS.<br className="hidden md:block" />
-                        <span className="bg-gradient-to-r from-orange-400 via-amber-200 to-purple-400 bg-clip-text text-transparent italic drop-shadow-[0_0_15px_rgba(251,191,36,0.2)]"> DOMINATE THE GRID.</span>
+                        EMPOWERING YOUTH THROUGH<br className="hidden md:block" />
+                        <span className="bg-gradient-to-r from-orange-400 via-amber-200 to-purple-400 bg-clip-text text-transparent italic drop-shadow-[0_0_15px_rgba(251,191,36,0.2)]"> TECH & ESPORTS</span>
                       </h1>
                       <p className="text-white/40 text-xs md:text-lg uppercase tracking-[0.2em] max-w-2xl mx-auto md:mx-0">
-                        Welcome to Runway Career Connect • Choose your arena
+                        Welcome to The Octave Alliance
                       </p>
                     </motion.div>
 
@@ -394,387 +460,247 @@ export default function Home() {
                     </motion.div>
                   </div>
 
-                  {/* Main Note Banner */}
+                  {/* About Section */}
                   <motion.div
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    whileHover={{ scale: 1.02 }}
-                    transition={{ duration: 0.3, type: "spring", stiffness: 300 }}
-                    className="mb-12 relative rounded-[2.5rem] p-[2px] overflow-hidden group shadow-[0_0_50px_rgba(251,191,36,0.15)]"
-                  >
-                    {/* Animated Border Gradient */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-amber-400 via-orange-500 to-purple-600 opacity-70 group-hover:opacity-100 transition-opacity duration-500"></div>
-
-                    {/* Inner Content */}
-                    <div className="relative bg-[#0A0A0A]/80 backdrop-blur-[40px] rounded-[calc(2.5rem-2px)] p-6 md:p-10 flex flex-col md:flex-row items-center gap-8 h-full overflow-hidden border-t border-white/10">
-
-                      {/* Background Glow inside the card */}
-                      <div className="absolute top-0 left-1/4 w-full h-full bg-gradient-to-r from-amber-500/20 to-purple-500/20 blur-[100px] rounded-full pointer-events-none transition-all duration-700 group-hover:scale-110"></div>
-
-                      {/* Icon Container with intense glow */}
-                      <div className="relative shrink-0">
-                        <div className="absolute inset-0 bg-amber-400 blur-2xl opacity-40 group-hover:opacity-70 transition-opacity duration-500 animate-pulse"></div>
-                        <div className="relative p-6 bg-gradient-to-br from-amber-500/20 to-orange-600/20 border border-amber-300/50 rounded-3xl shadow-[0_0_30px_rgba(245,158,11,0.3)] backdrop-blur-md">
-                          <Ticket className="w-12 h-12 md:w-16 md:h-16 text-amber-300 drop-shadow-[0_0_20px_rgba(251,191,36,1)] group-hover:-rotate-12 group-hover:scale-110 transition-all duration-500" />
-                        </div>
-                      </div>
-
-                      {/* Text Content */}
-                      <div className="relative z-10 text-center md:text-left flex-1">
-                        <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-gradient-to-r from-amber-500/20 to-orange-500/20 border border-amber-400/40 rounded-full mb-4 shadow-[0_0_15px_rgba(245,158,11,0.3)]">
-                          <Flame className="w-4 h-4 text-orange-400 animate-bounce" />
-                          <span className="text-amber-300 font-black text-[10px] md:text-xs uppercase tracking-[0.2em]">Guaranteed For All</span>
-                        </div>
-
-                        <h3 className="font-display font-black text-3xl md:text-6xl uppercase tracking-tighter mb-4 bg-gradient-to-r from-amber-100 via-amber-300 to-orange-500 bg-clip-text text-transparent drop-shadow-2xl leading-none">
-                          Free Event Ticket
-                        </h3>
-
-                        <p className="text-white/80 md:text-lg leading-[2.5] font-medium">
-                          Every participant will receive a <strong className="relative inline-block px-3 py-1 mx-1 text-black font-black uppercase tracking-widest text-sm rounded-lg overflow-hidden group/ticket shadow-[0_0_15px_rgba(245,158,11,0.4)] align-middle">
-                            <span className="absolute inset-0 bg-gradient-to-r from-amber-400 via-yellow-300 to-orange-500 group-hover/ticket:scale-110 transition-transform duration-500"></span>
-                            <span className="relative z-10 drop-shadow-sm">FREE TICKET</span>
-                          </strong> to Nepal's biggest event happening on <strong className="text-amber-400 font-black tracking-widest text-lg bg-amber-500/10 px-2 py-0.5 rounded-lg border border-amber-400/40 inline-block align-middle mx-1 shadow-inner">2083/03/26</strong>!
-                        </p>
-                      </div>
-
-                      {/* Decorative Watermark */}
-                      <Ticket className="absolute -right-12 -bottom-12 w-72 h-72 text-amber-500/10 rotate-12 pointer-events-none" />
-                    </div>
-                  </motion.div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 pb-4">
-                    {/* PUBG Card (Overview) */}
-                    <div
-                      className="relative group border border-orange-500/30 bg-[#0A0A0A]/60 backdrop-blur-3xl rounded-3xl p-6 md:p-8 flex flex-col justify-between overflow-hidden transition-all duration-500 text-left cursor-pointer hover:border-orange-500/70 hover:bg-orange-500/10 hover:shadow-[0_0_40px_rgba(234,88,12,0.2)] hover:-translate-y-2"
-                      onClick={() => handleTabChange('pubg')}
-                    >
-                      <div className="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-30 transition-all duration-500 group-hover:scale-110 group-hover:rotate-12">
-                        <Flame className="w-16 h-16 md:w-24 md:h-24 text-orange-500" />
-                      </div>
-
-                      <div className="relative z-10">
-                        <div className="inline-block px-3 py-1 rounded-full border border-orange-500/30 bg-orange-500/10 text-orange-500 text-[10px] font-bold tracking-widest uppercase mb-6">
-                          Esports Tournament
-                        </div>
-                        <h2 className="text-3xl md:text-5xl font-display font-bold mb-4 leading-[1.1]">Winner Winner<br />Runway Dinner</h2>
-                        <div className="space-y-3">
-                          <div className="flex items-center gap-3 text-white/70">
-                            <Calendar className="w-4 h-4 md:w-5 md:h-5 text-orange-500" />
-                            <span className="text-xs md:text-sm font-mono">2083 / 03 / 17</span>
-                          </div>
-                          <div className="flex items-center gap-3 text-white/70">
-                            <MapPin className="w-4 h-4 md:w-5 md:h-5 text-orange-500" />
-                            <span className="text-xs md:text-sm">NCMT COLLEGE, SAMAKHUSHI</span>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="relative z-10 mt-8">
-                        <div className="flex flex-col md:flex-row md:flex-wrap gap-4 justify-between md:items-end mb-4">
-                          <div>
-                            <p className="text-[10px] text-white/40 uppercase tracking-widest mb-1">Registration Status</p>
-                            <p className="text-xl md:text-2xl font-black text-orange-500">🔥 {stats ? stats.pubg : '...'} / 32 <span className="text-xs md:text-sm font-normal text-white/60">SQUADS</span></p>
-                          </div>
-                          <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="w-full md:w-auto px-8 py-3 bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 text-white font-display font-bold rounded-xl transition-all shadow-[0_0_20px_rgba(234,88,12,0.3)] hover:shadow-[0_0_40px_rgba(234,88,12,0.6)] whitespace-nowrap border border-orange-400/20">
-                            JOIN GRID
-                          </motion.button>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* AI Card (Overview) */}
-                    <div
-                      className="relative group border border-purple-500/30 bg-[#0A0A0A]/60 backdrop-blur-3xl rounded-3xl p-6 md:p-8 flex flex-col justify-between overflow-hidden transition-all duration-500 text-left cursor-pointer hover:border-purple-500/70 hover:bg-purple-500/10 hover:shadow-[0_0_40px_rgba(147,51,234,0.2)] hover:-translate-y-2"
-                      onClick={() => handleTabChange('ai')}
-                    >
-                      <div className="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-30 transition-all duration-500 group-hover:scale-110 group-hover:-rotate-12">
-                        <Zap className="w-16 h-16 md:w-24 md:h-24 text-purple-500" />
-                      </div>
-
-                      <div className="relative z-10">
-                        <div className="inline-block px-3 py-1 rounded-full border border-purple-500/30 bg-purple-500/10 text-purple-500 text-[10px] font-bold tracking-widest uppercase mb-6">
-                          Masterclass Workshop
-                        </div>
-                        <h2 className="text-3xl md:text-5xl font-display font-bold mb-4 leading-[1.1]">Digital Marketing<br />with AI</h2>
-                        <div className="space-y-3">
-                          <div className="flex items-center gap-3 text-white/70">
-                            <Calendar className="w-4 h-4 md:w-5 md:h-5 text-purple-500" />
-                            <span className="text-xs md:text-sm font-mono">15 ASAR 2083</span>
-                          </div>
-                          <div className="flex items-center gap-3 text-white/70">
-                            <MapPin className="w-4 h-4 md:w-5 md:h-5 text-purple-500" />
-                            <span className="text-xs md:text-sm">Venue: LBEF college, Maiti Devi</span>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="relative z-10 mt-8">
-                        <div className="flex flex-col md:flex-row md:flex-wrap gap-4 justify-between md:items-end mb-4">
-                          <div>
-                            <p className="text-[10px] text-white/40 uppercase tracking-widest mb-1">Available Capacity</p>
-                            <p className="text-xl md:text-2xl font-black text-purple-500">⚡ {stats ? stats.ai : '...'} / 50 <span className="text-xs md:text-sm font-normal text-white/60">SEATS</span></p>
-                          </div>
-                          <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="w-full md:w-auto px-8 py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-display font-bold rounded-xl transition-all shadow-[0_0_20px_rgba(147,51,234,0.3)] hover:shadow-[0_0_40px_rgba(147,51,234,0.6)] whitespace-nowrap border border-purple-400/20">
-                            RESERVE
-                          </motion.button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Venue Info */}
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
+                    initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.4, duration: 0.3 }}
-                    className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6"
+                    transition={{ delay: 0.2, duration: 0.5 }}
+                    className="mt-12 mb-16 max-w-6xl mx-auto px-4"
                   >
-                    <div className="p-6 rounded-3xl bg-white/5 border border-white/10 flex items-start gap-4 hover:border-orange-500/30 hover:bg-orange-500/5 transition-all cursor-default group">
-                      <div className="p-3 rounded-xl bg-orange-500/10 border border-orange-500/20 text-orange-500 shrink-0 group-hover:scale-110 transition-transform">
-                        <MapPin className="w-6 h-6" />
-                      </div>
-                      <div>
-                        <p className="text-[10px] text-orange-400 uppercase tracking-widest font-bold mb-1 font-mono">PUBG Tournament Venue</p>
-                        <h3 className="text-base font-bold text-white mb-1">NCMT College, Samakhushi</h3>
-                        <p className="text-xs text-white/50 leading-relaxed">Located in Samakhushi, Kathmandu. Features an open-air tournament arena with full setups. Parking and on-site support available.</p>
-                      </div>
-                    </div>
+                    <div className="relative p-[1px] rounded-[2rem] overflow-hidden group">
+                      <div className="absolute inset-0 bg-gradient-to-br from-orange-500/30 via-purple-500/10 to-amber-500/30 opacity-50 group-hover:opacity-100 transition-opacity duration-700"></div>
+                      <div className="relative bg-[#0A0A0A]/90 backdrop-blur-2xl rounded-[calc(2rem-1px)] p-6 md:p-12 border border-white/10 flex flex-col lg:flex-row gap-8 lg:gap-12 items-center">
 
-                    <div className="p-6 rounded-3xl bg-white/5 border border-white/10 flex items-start gap-4 hover:border-purple-500/30 hover:bg-purple-500/5 transition-all cursor-default group">
-                      <div className="p-3 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-500 shrink-0 group-hover:scale-110 transition-transform">
-                        <MapPin className="w-6 h-6" />
-                      </div>
-                      <div>
-                        <p className="text-[10px] text-purple-400 uppercase tracking-widest font-bold mb-1 font-mono">AI Workshop Venue</p>
-                        <h3 className="text-lg font-display font-bold text-white mb-1">LBEF college, Maiti Devi</h3>
-                        <p className="text-xs text-white/60 leading-relaxed">Located at LBEF college in Maiti Devi. Features a premium, tech-equipped environment. Location instructions via SMS/email.</p>
+                        {/* Glow effect */}
+                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-gradient-to-r from-orange-500/10 to-purple-500/10 blur-[80px] pointer-events-none"></div>
+
+                        {/* Text Side */}
+                        <div className="flex-1 text-center lg:text-left z-10">
+                          <div className="flex flex-col lg:flex-row items-center gap-3 mb-4 justify-center lg:justify-start">
+                            <div className="inline-block px-3 py-1 rounded-full border border-orange-500/30 bg-orange-500/10 text-orange-400 text-xs font-bold tracking-widest uppercase shadow-[0_0_15px_rgba(234,88,12,0.2)]">
+                              Who We Are
+                            </div>
+                            <a href="https://www.runwaycareerconnect.com" target="_blank" rel="noopener noreferrer" className="group/parent inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/10 bg-white/5 hover:bg-white/10 text-white/60 hover:text-white transition-all text-xs font-bold tracking-widest uppercase">
+                              <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse"></span>
+                              An initiative by Runway Career Connect
+                            </a>
+                          </div>
+                          <h2 className="text-3xl md:text-5xl font-display font-black mb-6 text-transparent bg-clip-text bg-gradient-to-r from-white via-orange-100 to-white leading-tight">
+                            We Are <br className="hidden lg:block" />
+                            <span className="bg-gradient-to-r from-orange-400 via-amber-300 to-orange-500 bg-clip-text text-transparent">The Octave Alliance</span>
+                          </h2>
+                          <p className="text-white/70 text-sm md:text-base leading-relaxed mb-6 font-medium">
+                            Operating under <a href="https://www.runwaycareerconnect.com" target="_blank" rel="noopener noreferrer" className="text-white font-bold hover:text-orange-400 transition-colors underline underline-offset-2">Runway Career Connect</a>—Nepal's largest youth career mentorship platform—we are a community-driven organization dedicated to empowering the next generation. We bridge the gap between raw talent and real-world opportunities by curating high-impact tech masterclasses, competitive esports tournaments, and digital skill-building events.
+                          </p>
+                          <p className="text-white/50 text-sm md:text-base leading-relaxed">
+                            Through our dynamic events, we aim to inspire creativity, foster leadership, and build a network of future innovators and digital leaders in Nepal.
+                          </p>
+                        </div>
+
+                        {/* Features Side */}
+                        <div className="w-full lg:w-[45%] flex flex-col gap-4 z-10">
+                          <div className="group/item flex items-start gap-4 p-5 rounded-2xl bg-white/5 border border-white/5 hover:border-orange-500/40 hover:bg-orange-500/5 transition-all duration-300">
+                            <div className="p-3 rounded-xl bg-gradient-to-br from-orange-500/20 to-amber-500/10 border border-orange-500/20 text-orange-400 shrink-0 group-hover/item:scale-110 group-hover/item:rotate-3 transition-transform shadow-[0_0_20px_rgba(234,88,12,0.15)]">
+                              <Crosshair className="w-6 h-6" />
+                            </div>
+                            <div className="text-left">
+                              <h3 className="font-bold text-white text-base mb-1">Esports Excellence</h3>
+                              <p className="text-xs md:text-sm text-white/50">Organizing highly competitive grids and fostering raw gaming talent.</p>
+                            </div>
+                          </div>
+
+                          <div className="group/item flex items-start gap-4 p-5 rounded-2xl bg-white/5 border border-white/5 hover:border-purple-500/40 hover:bg-purple-500/5 transition-all duration-300">
+                            <div className="p-3 rounded-xl bg-gradient-to-br from-purple-500/20 to-pink-500/10 border border-purple-500/20 text-purple-400 shrink-0 group-hover/item:scale-110 group-hover/item:-rotate-3 transition-transform shadow-[0_0_20px_rgba(168,85,247,0.15)]">
+                              <Zap className="w-6 h-6" />
+                            </div>
+                            <div className="text-left">
+                              <h3 className="font-bold text-white text-base mb-1">Tech Masterclasses</h3>
+                              <p className="text-xs md:text-sm text-white/50">Hands-on workshops in AI, digital marketing, and emerging tech.</p>
+                            </div>
+                          </div>
+
+                          <div className="group/item flex items-start gap-4 p-5 rounded-2xl bg-white/5 border border-white/5 hover:border-green-500/40 hover:bg-green-500/5 transition-all duration-300">
+                            <div className="p-3 rounded-xl bg-gradient-to-br from-green-500/20 to-emerald-500/10 border border-green-500/20 text-green-400 shrink-0 group-hover/item:scale-110 group-hover/item:rotate-3 transition-transform shadow-[0_0_20px_rgba(34,197,94,0.15)]">
+                              <Users className="w-6 h-6" />
+                            </div>
+                            <div className="text-left">
+                              <h3 className="font-bold text-white text-base mb-1">Community First</h3>
+                              <p className="text-xs md:text-sm text-white/50">Building a strong network of passionate youth and future leaders.</p>
+                            </div>
+                          </div>
+                        </div>
+
                       </div>
                     </div>
                   </motion.div>
 
-                </motion.div>
-              )}
+                  {/* Our Impact Statistics */}
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, margin: "-100px" }}
+                    transition={{ duration: 0.6 }}
+                    className="max-w-6xl mx-auto px-4 mb-20"
+                  >
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+                      {[
+                        { label: 'Students Impacted', value: '500+', icon: Users, color: 'text-orange-500', bg: 'bg-orange-500/10' },
+                        { label: 'Masterclasses', value: '10+', icon: Lightbulb, color: 'text-amber-500', bg: 'bg-amber-500/10' },
+                        { label: 'Esports Events', value: '15+', icon: Gamepad2, color: 'text-purple-500', bg: 'bg-purple-500/10' },
+                        { label: 'Community Members', value: '2K+', icon: MessageSquare, color: 'text-pink-500', bg: 'bg-pink-500/10' },
+                      ].map((stat, i) => (
+                        <div key={i} className="group flex flex-col items-center justify-center p-6 md:p-8 rounded-2xl bg-white/5 border border-white/5 hover:bg-white/10 hover:scale-105 transition-all duration-300 relative overflow-hidden">
+                          <div className={`absolute top-0 right-0 w-24 h-24 rounded-full blur-[40px] opacity-20 ${stat.bg} group-hover:opacity-40 transition-opacity`}></div>
+                          <stat.icon className={`w-8 h-8 mb-4 ${stat.color} opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all`} />
+                          <h3 className="text-3xl md:text-5xl font-display font-black text-white mb-2 tabular-nums tracking-tighter">{stat.value}</h3>
+                          <p className="text-[10px] md:text-xs text-white/50 uppercase tracking-widest font-bold text-center">{stat.label}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </motion.div>
 
-              {/* PUBG TAB */}
-              {activeTab === 'pubg' && (
-                <motion.div
-                  key="pubg"
-                  initial="hidden"
-                  animate="show"
-                  exit="hidden"
-                  variants={{
-                    hidden: { opacity: 0, y: 10, transition: { duration: 0.2, ease: "easeOut" } },
-                    show: { opacity: 1, y: 0, transition: { staggerChildren: 0.05, delayChildren: 0.1, duration: 0.4, ease: "easeOut" } }
-                  } as any}
-                  className="max-w-5xl mx-auto"
-                >
-                  <div className="flex flex-col md:flex-row gap-8 md:gap-12">
-                    <div className="md:w-1/2 space-y-6">
-                      <motion.h2 variants={fadeUp} className="text-3xl md:text-4xl font-black mb-4 leading-tight bg-gradient-to-r from-orange-400 via-amber-500 to-yellow-500 bg-clip-text text-transparent drop-shadow-sm">
-                        PUBG Mobile Tournament
-                      </motion.h2>
+                  {/* Upcoming Initiatives */}
+                  <div className="mb-20 max-w-6xl mx-auto px-4">
+                    <div className="text-center mb-10">
+                      <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-orange-500/30 bg-orange-500/10 text-orange-400 text-xs font-bold tracking-widest uppercase mb-4 shadow-[0_0_15px_rgba(234,88,12,0.2)]">
+                        <Rocket className="w-3 h-3 animate-pulse" />
+                        What's Next
+                      </div>
+                      <h2 className="text-3xl md:text-5xl font-display font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-orange-100 to-white">
+                        Upcoming Initiatives
+                      </h2>
+                    </div>
 
-                      <motion.div variants={fadeUp} className="inline-flex items-start md:items-center gap-3 bg-gradient-to-r from-amber-500/10 to-transparent border border-amber-500/20 p-3 rounded-xl">
-                        <Ticket className="w-5 h-5 text-amber-400 shrink-0 mt-0.5 md:mt-0 animate-pulse" />
-                        <p className="text-sm font-medium text-amber-100/90 leading-tight">
-                          Includes a <strong className="text-amber-400 drop-shadow-sm">FREE TICKET</strong> to Nepal's biggest event on 2083/03/26!
-                        </p>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      {/* Upcoming Masterclass */}
+                      <motion.div 
+                        whileHover={{ y: -5 }}
+                        className="group relative p-[1px] rounded-[2rem] overflow-hidden"
+                      >
+                        <div className="absolute inset-0 bg-gradient-to-br from-amber-500/50 to-orange-500/10 opacity-30 group-hover:opacity-100 transition-opacity duration-500"></div>
+                        <div className="relative h-full bg-[#0A0A0A]/90 backdrop-blur-xl rounded-[calc(2rem-1px)] p-8 border border-white/10 overflow-hidden">
+                          <div className="absolute -top-20 -right-20 w-48 h-48 bg-amber-500/20 rounded-full blur-[60px] group-hover:bg-amber-500/30 transition-colors"></div>
+                          
+                          <div className="inline-block px-3 py-1 rounded-md bg-amber-500/20 text-amber-400 text-[10px] font-bold tracking-widest uppercase mb-6 border border-amber-500/30">
+                            Coming Soon
+                          </div>
+                          
+                          <Lightbulb className="w-10 h-10 text-amber-500 mb-6 group-hover:scale-110 transition-transform" />
+                          
+                          <h3 className="text-2xl font-display font-black text-white mb-3">AI & Web3 Masterclass</h3>
+                          <p className="text-sm text-white/50 mb-8 leading-relaxed">
+                            Dive deep into the future of technology with industry leaders. Learn practical skills in artificial intelligence and decentralized web technologies.
+                          </p>
+                          
+                          <button className="w-full py-4 rounded-xl bg-white/5 border border-white/10 text-white/50 font-bold uppercase tracking-widest text-xs hover:bg-white/10 hover:text-white transition-all cursor-not-allowed">
+                            Registrations Opening Soon
+                          </button>
+                        </div>
                       </motion.div>
 
-                      <motion.div variants={fadeUp}>
-                        <Countdown targetDate="2026-07-01T10:00:00" label="Tournament Starts In" />
-                      </motion.div>
-
-                      <motion.div variants={fadeUp}>
-                        <LiveCounter
-                          count={stats?.pubg ?? null}
-                          max={32}
-                          label="Squads Registered"
-                          icon={Flame}
-                          className="bg-orange-500/10 text-orange-400 border-orange-500/20"
-                        />
-                      </motion.div>
-
-                      <motion.div variants={fadeUp} className="space-y-4 md:space-y-6">
-                        <div className="group flex items-start gap-4 p-4 rounded-2xl bg-white/5 hover:bg-orange-500/10 border border-white/5 hover:border-orange-500/30 transition-all cursor-default">
-                          <Calendar className="w-6 h-6 text-orange-500 shrink-0 mt-1 group-hover:scale-110 transition-transform" />
-                          <div>
-                            <p className="font-bold text-white text-lg">Event Schedule</p>
-                            <div className="text-sm text-white/60 mt-2 space-y-1">
-                              <p><span className="text-orange-400 font-mono">10:00 AM</span> - Check-in & Briefing</p>
-                              <p><span className="text-orange-400 font-mono">11:00 AM</span> - Matches Commence</p>
-                              <p><span className="text-orange-400 font-mono">04:00 PM</span> - Award Ceremony</p>
-                            </div>
+                      {/* Upcoming Esports */}
+                      <motion.div 
+                        whileHover={{ y: -5 }}
+                        className="group relative p-[1px] rounded-[2rem] overflow-hidden"
+                      >
+                        <div className="absolute inset-0 bg-gradient-to-br from-purple-500/50 to-pink-500/10 opacity-30 group-hover:opacity-100 transition-opacity duration-500"></div>
+                        <div className="relative h-full bg-[#0A0A0A]/90 backdrop-blur-xl rounded-[calc(2rem-1px)] p-8 border border-white/10 overflow-hidden">
+                          <div className="absolute -top-20 -right-20 w-48 h-48 bg-purple-500/20 rounded-full blur-[60px] group-hover:bg-purple-500/30 transition-colors"></div>
+                          
+                          <div className="inline-block px-3 py-1 rounded-md bg-purple-500/20 text-purple-400 text-[10px] font-bold tracking-widest uppercase mb-6 border border-purple-500/30">
+                            Planning Phase
                           </div>
-                        </div>
-
-                        <div className="group flex items-start gap-4 p-4 rounded-2xl bg-white/5 hover:bg-orange-500/10 border border-white/5 hover:border-orange-500/30 transition-all cursor-default">
-                          <Trophy className="w-6 h-6 text-orange-500 shrink-0 mt-1 group-hover:scale-110 transition-transform" />
-                          <div>
-                            <p className="font-bold text-white text-lg">Prize Breakdown (Rs. 10,000)</p>
-                            <div className="text-sm text-white/60 mt-2 space-y-1">
-                              <p><span className="text-orange-400 font-bold">1st Place:</span> Rs. 5,000 + Trophy</p>
-                              <p><span className="text-orange-400 font-bold">2nd Place:</span> Rs. 3,000</p>
-                              <p><span className="text-orange-400 font-bold">3rd Place:</span> Rs. 2,000</p>
-                            </div>
-                          </div>
-                        </div>
-
-                        <div className="group flex items-start gap-4 p-4 rounded-2xl bg-white/5 hover:bg-orange-500/10 border border-white/5 hover:border-orange-500/30 transition-all cursor-default">
-                          <MapPin className="w-6 h-6 text-orange-500 shrink-0 mt-1 group-hover:scale-110 transition-transform" />
-                          <div>
-                            <p className="font-bold text-white text-lg">Tournament Venue</p>
-                            <p className="text-sm text-white/60 mt-1">NCMT College, Samakhushi, Kathmandu</p>
-                            <p className="text-xs text-white/40 mt-1">Physical check-in at the open-air arena. Please bring your QR registration code or email confirmation.</p>
-                          </div>
-                        </div>
-
-                        <div className="group flex items-start gap-4 p-4 rounded-2xl bg-white/5 hover:bg-orange-500/10 border border-white/5 hover:border-orange-500/30 transition-all cursor-default">
-                          <FileText className="w-6 h-6 text-orange-500 shrink-0 mt-1 group-hover:scale-110 transition-transform" />
-                          <div>
-                            <p className="font-bold text-white text-lg">Rules & Requirements</p>
-                            <ul className="text-sm text-white/60 mt-2 space-y-1 list-disc list-inside">
-                              <li>Strictly Mobile only (No emulators).</li>
-                              <li>Fair play enforcement in place.</li>
-                              <li>Bring your own device and charger.</li>
-                            </ul>
-                          </div>
+                          
+                          <Gamepad2 className="w-10 h-10 text-purple-500 mb-6 group-hover:scale-110 transition-transform" />
+                          
+                          <h3 className="text-2xl font-display font-black text-white mb-3">Valorant Open Cup</h3>
+                          <p className="text-sm text-white/50 mb-8 leading-relaxed">
+                            Gear up for the most intense tactical shooter tournament of the year. Gather your squad and compete for the ultimate prize pool and glory.
+                          </p>
+                          
+                          <button className="w-full py-4 rounded-xl bg-white/5 border border-white/10 text-white/50 font-bold uppercase tracking-widest text-xs hover:bg-white/10 hover:text-white transition-all cursor-not-allowed">
+                            Stay Tuned
+                          </button>
                         </div>
                       </motion.div>
                     </div>
-
-                    <motion.div variants={fadeUp} className="md:w-1/2 flex items-start justify-center pt-8 md:pt-0 md:sticky md:top-24 h-fit">
-                      <div className="bg-[#0A0A0A]/60 border border-white/20 rounded-3xl p-8 md:p-12 backdrop-blur-[40px] text-center shadow-[0_0_50px_rgba(234,88,12,0.15)] w-full max-w-md relative overflow-hidden group">
-                        <div className="absolute inset-0 bg-gradient-to-br from-orange-500/10 to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                        <Flame className="w-20 h-20 text-orange-500 mx-auto mb-6 opacity-80 group-hover:scale-110 group-hover:rotate-12 transition-all duration-500" />
-                        <h3 className="text-3xl font-black mb-4 relative z-10">Ready to Dominate?</h3>
-                        <p className="text-white/60 mb-8 relative z-10">Secure your squad's position. Slots are extremely limited.</p>
-                        <motion.a
-                          whileHover={{ scale: 1.05 }}
-                          whileTap={{ scale: 0.95 }}
-                          href="https://docs.google.com/forms/d/e/1FAIpQLSeXewi_CsfCyZS3eAERmMhceBDrQL7kYSoJULvT6WbsGdOZ6A/viewform?usp=dialog"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="relative z-10 inline-block w-full px-6 py-4 bg-gradient-to-r from-orange-600 to-amber-500 hover:from-orange-500 hover:to-amber-400 text-white font-black rounded-xl transition-all shadow-[0_0_20px_rgba(234,88,12,0.4)] hover:shadow-[0_0_40px_rgba(234,88,12,0.6)] uppercase tracking-widest text-sm"
-                        >
-                          Register Squad Now
-                        </motion.a>
-                      </div>
-                    </motion.div>
                   </div>
-                </motion.div>
-              )}
 
-              {/* AI WORKSHOP TAB */}
-              {activeTab === 'ai' && (
-                <motion.div
-                  key="ai"
-                  initial="hidden"
-                  animate="show"
-                  exit="hidden"
-                  variants={{
-                    hidden: { opacity: 0, y: 10, transition: { duration: 0.2, ease: "easeOut" } },
-                    show: { opacity: 1, y: 0, transition: { staggerChildren: 0.05, delayChildren: 0.1, duration: 0.4, ease: "easeOut" } }
-                  } as any}
-                  className="max-w-5xl mx-auto"
-                >
-                  <div className="flex flex-col md:flex-row gap-8 md:gap-12">
-                    <div className="md:w-1/2 space-y-6">
-                      <motion.h2 variants={fadeUp} className="text-3xl md:text-4xl font-black mb-4 leading-tight bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 bg-clip-text text-transparent drop-shadow-sm">
-                        Digital Marketing with AI
-                      </motion.h2>
-
-                      <motion.div variants={fadeUp} className="inline-flex items-start md:items-center gap-3 bg-gradient-to-r from-amber-500/10 to-transparent border border-amber-500/20 p-3 rounded-xl">
-                        <Ticket className="w-5 h-5 text-amber-400 shrink-0 mt-0.5 md:mt-0 animate-pulse" />
-                        <p className="text-sm font-medium text-amber-100/90 leading-tight">
-                          Includes a <strong className="text-amber-400 drop-shadow-sm">FREE TICKET</strong> to Nepal's biggest event on 2083/03/26!
-                        </p>
-                      </motion.div>
-
-                      <motion.div variants={fadeUp}>
-                        <Countdown targetDate="2026-06-29T10:00:00" label="Workshop Starts In" />
-                      </motion.div>
-
-                      <motion.div variants={fadeUp}>
-                        <LiveCounter
-                          count={stats?.ai ?? null}
-                          max={50}
-                          label="Seats Booked"
-                          icon={Zap}
-                          className="bg-purple-500/10 text-purple-400 border-purple-500/20"
-                        />
-                      </motion.div>
-
-                      <motion.div variants={fadeUp} className="space-y-4 md:space-y-6">
-                        <div className="group flex items-start gap-4 p-4 rounded-2xl bg-white/5 hover:bg-purple-500/10 border border-white/5 hover:border-purple-500/30 transition-all cursor-default">
-                          <Calendar className="w-6 h-6 text-purple-500 shrink-0 mt-1 group-hover:scale-110 transition-transform" />
-                          <div>
-                            <p className="font-bold text-white text-lg">Workshop Agenda</p>
-                            <div className="text-sm text-white/60 mt-2 space-y-1">
-                              <p><span className="text-purple-400 font-mono">Part 1</span> - Introduction to AI tools</p>
-                              <p><span className="text-purple-400 font-mono">Part 2</span> - Hands-on Marketing Campaigns</p>
-                              <p><span className="text-purple-400 font-mono">Part 3</span> - Q&A and Networking</p>
-                            </div>
-                          </div>
-                        </div>
-
-                        <div className="group flex items-start gap-4 p-4 rounded-2xl bg-white/5 hover:bg-purple-500/10 border border-white/5 hover:border-purple-500/30 transition-all cursor-default">
-                          <MapPin className="w-6 h-6 text-purple-500 shrink-0 mt-1 group-hover:scale-110 transition-transform" />
-                          <div>
-                            <p className="font-bold font-display text-white text-xl">Workshop Venue</p>
-                            <p className="text-sm text-white/70 mt-1">LBEF college, Maiti Devi</p>
-                            <p className="text-xs text-white/50 mt-1">State-of-the-art tech lab facility. Registered participants will receive location details via SMS/email soon.</p>
-                          </div>
-                        </div>
-
-                        <div className="group flex items-start gap-4 p-4 rounded-2xl bg-white/5 hover:bg-purple-500/10 border border-white/5 hover:border-purple-500/30 transition-all cursor-default">
-                          <Crosshair className="w-6 h-6 text-purple-500 shrink-0 mt-1 group-hover:scale-110 transition-transform" />
-                          <div>
-                            <p className="font-bold text-white text-lg">Prerequisites</p>
-                            <ul className="text-sm text-white/60 mt-2 space-y-1 list-disc list-inside">
-                              <li>Basic understanding of social media.</li>
-                              <li>Bring your laptop (fully charged).</li>
-                              <li>An open mind to learn new AI workflows.</li>
-                            </ul>
-                          </div>
-                        </div>
-
-                        <div className="group flex items-start gap-4 p-4 rounded-2xl bg-white/5 hover:bg-purple-500/10 border border-white/5 hover:border-purple-500/30 transition-all cursor-default">
-                          <CheckCircle className="w-6 h-6 text-purple-500 shrink-0 mt-1 group-hover:scale-110 transition-transform" />
-                          <div>
-                            <p className="font-bold text-white text-lg">What You Will Learn</p>
-                            <div className="text-sm text-white/60 mt-2 space-y-1">
-                              <p>✔️ Content generation at scale using LLMs.</p>
-                              <p>✔️ Automated scheduling and analytics.</p>
-                              <p>✔️ Building a personal or brand voice with AI.</p>
-                            </div>
-                          </div>
-                        </div>
-                      </motion.div>
+                  {/* Past Events Section */}
+                  <div className="mt-8 mb-12">
+                    <div className="flex items-center gap-4 mb-6">
+                      <div className="h-px bg-white/10 flex-1"></div>
+                      <h2 className="text-sm font-bold uppercase tracking-[0.2em] text-white/40">Past Events</h2>
+                      <div className="h-px bg-white/10 flex-1"></div>
                     </div>
 
-                    <motion.div variants={fadeUp} className="md:w-1/2 flex items-start justify-center pt-8 md:pt-0 md:sticky md:top-24 h-fit">
-                      <div className="bg-[#0A0A0A]/60 border border-white/20 rounded-3xl p-8 md:p-12 backdrop-blur-[40px] text-center shadow-[0_0_50px_rgba(147,51,234,0.15)] w-full max-w-md relative overflow-hidden group">
-                        <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-orange-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                        <Zap className="w-20 h-20 text-purple-500 mx-auto mb-6 opacity-80 group-hover:scale-110 group-hover:-rotate-12 transition-all duration-500" />
-                        <h3 className="text-3xl font-black mb-4 relative z-10">Secure Your Seat</h3>
-                        <p className="text-white/60 mb-8 relative z-10">Capacity is capped at 50 to ensure hands-on learning.</p>
-                        <motion.a
-                          whileHover={{ scale: 1.05 }}
-                          whileTap={{ scale: 0.95 }}
-                          href="https://docs.google.com/forms/d/e/1FAIpQLSebp75J8vqd8JDnaXsa8DOjCApwh4mKZ13x3polyK1GojCD0A/viewform?usp=dialog"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="relative z-10 inline-block w-full px-6 py-4 bg-gradient-to-r from-purple-600 to-pink-500 hover:from-purple-500 hover:to-pink-400 text-white font-black rounded-xl transition-all shadow-[0_0_20px_rgba(147,51,234,0.4)] hover:shadow-[0_0_40px_rgba(147,51,234,0.6)] uppercase tracking-widest text-sm"
-                        >
-                          Reserve Your Spot
-                        </motion.a>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pb-4">
+                      {/* PUBG Card (Past) */}
+                      <div
+                        className="relative group border border-orange-500/20 bg-[#0A0A0A]/40 backdrop-blur-xl rounded-2xl p-5 flex flex-col justify-between overflow-hidden transition-all duration-500 text-left"
+                      >
+                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 -rotate-12 border-2 border-red-500/80 text-red-500/80 font-black text-2xl uppercase px-4 py-2 rounded-lg opacity-70 pointer-events-none z-50 whitespace-nowrap bg-[#0A0A0A]/50 backdrop-blur-sm">
+                          CANCELED
+                        </div>
+                        <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-all duration-500 group-hover:scale-110 group-hover:rotate-12">
+                          <Flame className="w-12 h-12 text-orange-500" />
+                        </div>
+
+                        <div className="relative z-10">
+                          <div className="inline-block px-2 py-0.5 rounded-full border border-orange-500/20 bg-orange-500/5 text-orange-500/80 text-[8px] font-bold tracking-widest uppercase mb-3">
+                            Esports Tournament
+                          </div>
+                          <h3 className="text-xl font-display font-bold mb-2 leading-tight opacity-40">Winner Winner<br />Runway Dinner</h3>
+                          <div className="space-y-1.5 opacity-40">
+                            <div className="flex items-center gap-2 text-white/50">
+                              <Calendar className="w-3 h-3 text-orange-500/80" />
+                              <span className="text-[10px] font-mono">2083 / 03 / 17</span>
+                            </div>
+                            <div className="flex items-center gap-2 text-white/50">
+                              <MapPin className="w-3 h-3 text-orange-500/80" />
+                              <span className="text-[10px]">NCMT COLLEGE, SAMAKHUSHI</span>
+                            </div>
+                          </div>
+                        </div>
                       </div>
-                    </motion.div>
+
+                      {/* AI Card (Past) */}
+                      <div
+                        className="relative group border border-purple-500/20 bg-[#0A0A0A]/40 backdrop-blur-xl rounded-2xl p-5 flex flex-col justify-between overflow-hidden transition-all duration-500 text-left"
+                      >
+                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 -rotate-12 border-2 border-green-500/80 text-green-500/80 font-black text-2xl uppercase px-4 py-2 rounded-lg opacity-70 pointer-events-none z-50 whitespace-nowrap bg-[#0A0A0A]/50 backdrop-blur-sm">
+                          COMPLETED
+                        </div>
+                        <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-all duration-500 group-hover:scale-110 group-hover:-rotate-12">
+                          <Zap className="w-12 h-12 text-purple-500" />
+                        </div>
+
+                        <div className="relative z-10">
+                          <div className="inline-block px-2 py-0.5 rounded-full border border-purple-500/20 bg-purple-500/5 text-purple-500/80 text-[8px] font-bold tracking-widest uppercase mb-3">
+                            Masterclass Workshop
+                          </div>
+                          <h3 className="text-xl font-display font-bold mb-2 leading-tight opacity-50">Digital Marketing<br />with AI</h3>
+                          <div className="space-y-1.5 opacity-50">
+                            <div className="flex items-center gap-2 text-white/50">
+                              <Calendar className="w-3 h-3 text-purple-500/80" />
+                              <span className="text-[10px] font-mono">15 ASAR 2083</span>
+                            </div>
+                            <div className="flex items-center gap-2 text-white/50">
+                              <MapPin className="w-3 h-3 text-purple-500/80" />
+                              <span className="text-[10px]">Venue: LBEF college, Maiti Devi</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
+
+
+
                 </motion.div>
               )}
+
+
               {/* FAQ TAB */}
               {activeTab === 'faq' && (
                 <motion.div
@@ -793,18 +719,14 @@ export default function Home() {
                   </motion.h2>
 
                   {[
-                    { q: "Where is the event located?", a: "The PUBG Mobile Tournament is held physically at NCMT College, Samakhushi, Kathmandu. The venue for the Digital Marketing with AI Workshop is LBEF college, Maiti Devi. Registered participants will receive exact location details and instructions via email and SMS." },
-                    { q: "Do I need to pay to attend the AI Workshop or PUBG Tournament?", a: "No! Both events are completely free to attend, but registration is required. Slots are limited (50 seats for the AI workshop and 32 squads for PUBG), so please reserve early to secure your spot." },
-                    { q: "What if I register my PUBG squad but one player can't make it last minute?", a: "No worries! You can substitute up to one player before the check-in on the event day. Just make sure the new player is ready with their mobile device at the registration desk." },
-                    { q: "I'm a complete beginner to AI. Will I feel lost in the Digital Marketing workshop?", a: "Absolutely not! The workshop starts with the absolute basics of LLMs and AI tools. By the end, you'll be building automated marketing campaigns step-by-step. All you need is curiosity and a charged laptop." },
-                    { q: "Is there any entry fee for spectators who just want to watch the PUBG matches?", a: "Spectator entry is absolutely free! Bring your friends to cheer for your squad or experience the gaming vibe. We'll have a dedicated viewing area set up." },
-                    { q: "Will I get a certificate for attending the AI Workshop?", a: "Yes! All participants who complete the hands-on sessions of the AI Workshop will receive a digital Certificate of Participation from Runway Career Connect and The Octave Alliance." },
-                    { q: "Can I participate in both the PUBG Tournament and the AI Workshop?", a: "Yes, you can register for both, provided the schedules do not overlap. The tournament check-in starts at 10:00 AM, so plan your time accordingly." },
-                    { q: "Is the PUBG Tournament open to PC emulator or iPad players?", a: "No, the tournament is strictly for mobile devices (phones only) to ensure a level playing field. iPads, tablets, and emulators are strictly banned." },
-                    { q: "What should I bring with me?", a: "For the PUBG tournament: your mobile phone, charger, and a power bank. For the AI Workshop: a fully charged laptop. Wi-Fi will be provided at the venue for all participants." },
-                    { q: "Can I join the PUBG tournament as a solo player and find a squad there?", a: "We highly recommend registering as a full squad of 4 to secure your spot since registrations are competitive. However, if you are solo, reach out to us on Instagram (@theoctavealliance) and we will do our best to match you with other solo players looking for a team!" },
-                    { q: "What if I get hungry during the event? Is food provided?", a: "We've got you covered! Registered participants will get free light snacks and refreshments. For heavier meals, there will be food stalls inside the campus offering hot snacks and drinks at student-friendly prices." },
-                    { q: "How do I contact the organizers?", a: "You can reach us via our Instagram page @theoctavealliance or DM us on TikTok @the0ctave. For urgent queries on the event day, a helpdesk will be available at the entrance." }
+                    { q: "What is The Octave Alliance?", a: "The Octave Alliance is a community-driven organization focused on empowering youth through tech workshops, esports tournaments, and digital skill-building events." },
+                    { q: "Are your events free to attend?", a: "Yes! The majority of our events, including past esports tournaments and AI workshops, are completely free. However, spots are usually limited, so early registration is highly recommended." },
+                    { q: "How can I participate in future events?", a: "The best way to stay updated on our upcoming tournaments, masterclasses, and workshops is to follow us on Instagram (@theoctavealliance) and TikTok (@the0ctave). We announce all our registrations there!" },
+                    { q: "Do you provide certificates for your workshops?", a: "Yes! We provide digital Certificates of Participation for attendees who successfully complete our hands-on tech and marketing workshops." },
+                    { q: "I'm a beginner. Can I still join your tech workshops?", a: "Absolutely. Our workshops are designed to be accessible to beginners. For instance, our Digital Marketing with AI workshop started from the absolute basics, requiring only curiosity and a laptop." },
+                    { q: "Do I need to bring my own equipment?", a: "It depends on the event. For esports tournaments, we typically ask players to bring their own mobile devices and chargers. For tech workshops, bringing a fully charged laptop is usually required." },
+                    { q: "Can I volunteer or join The Octave Alliance?", a: "We are always looking for passionate individuals to join our crew! If you're interested in volunteering at our events or joining the core team, DM us on our Instagram page." },
+                    { q: "How do I contact the organizers?", a: "You can reach us via our Instagram page @theoctavealliance or DM us on TikTok @the0ctave." }
                   ].map((faq, i) => (
                     <motion.details key={i} variants={fadeUp} className="group bg-white/5 border border-white/10 rounded-2xl p-6 open:bg-blue-500/10 open:border-blue-500/30 transition-colors cursor-pointer">
                       <summary className="font-bold text-lg text-white group-open:text-blue-400 outline-none flex justify-between items-center list-none">
@@ -847,9 +769,8 @@ export default function Home() {
 
                     {/* Partners */}
                     {[
-                      { name: "NCMT College", role: "Venue Partner" },
                       { name: "Octave Cluster Crew", role: "Presented By" },
-                      { name: "Runway Career Connect", role: "Supported By" }
+                      { name: "The Octave Alliance", role: "Supported By" }
                     ].map((s, i) => (
                       <motion.div key={i} variants={fadeUp} className="p-6 rounded-3xl bg-white/5 border border-white/10 hover:border-emerald-500/30 hover:bg-emerald-500/10 transition-all duration-300 group">
                         <p className="text-[10px] text-emerald-400 uppercase tracking-[0.2em] font-bold mb-4">{s.role}</p>
@@ -861,7 +782,7 @@ export default function Home() {
                   </div>
 
                   <motion.p variants={fadeUp} className="mt-10 text-white/30 text-sm">
-                    Interested in sponsoring Runway Career Connect? <a href="https://www.instagram.com/theoctavealliance" target="_blank" rel="noopener noreferrer" className="text-green-400 hover:text-green-300 underline underline-offset-4 transition-colors">Get in touch →</a>
+                    Interested in sponsoring The Octave Alliance? <a href="https://www.instagram.com/theoctavealliance" target="_blank" rel="noopener noreferrer" className="text-green-400 hover:text-green-300 underline underline-offset-4 transition-colors">Get in touch →</a>
                   </motion.p>
                 </motion.div>
               )}
@@ -886,12 +807,14 @@ export default function Home() {
         </section>
 
         {/* Footer */}
-        <footer className="py-2 px-4 md:px-12 flex flex-col md:flex-row items-center justify-between bg-[#0A0A0A]/80 backdrop-blur-2xl border-t border-white/10 relative z-10 gap-4">
+        <footer className="py-4 px-4 md:px-12 flex flex-col md:flex-row items-center justify-between bg-[#0A0A0A]/80 backdrop-blur-2xl border-t border-white/10 relative z-10 gap-4">
           <div className="flex flex-col items-center md:items-start gap-2">
             <p className="text-[10px] text-white/20 uppercase tracking-widest font-mono">
               &copy; {new Date().getFullYear()} Organized by the <span className="text-white/80 font-bold">Octave Cluster Crew</span>
             </p>
-
+            <p className="text-[10px] text-white/20 uppercase tracking-widest font-mono">
+              An Initiative by <a href="https://www.runwaycareerconnect.com" target="_blank" rel="noopener noreferrer" className="text-white/50 font-bold hover:text-white transition-colors underline underline-offset-2">Runway Career Connect</a>
+            </p>
           </div>
 
           <div className="flex flex-col md:flex-row gap-6 items-center">
@@ -923,10 +846,8 @@ export default function Home() {
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.8, y: 20 }}
                 onClick={() => handleTabChange('overview')}
-                className={`fixed bottom-6 right-6 md:bottom-8 md:right-8 z-[100] flex items-center gap-2 px-5 py-3 rounded-full shadow-2xl backdrop-blur-xl transition-all border group cursor-pointer ${activeTab === 'pubg' ? 'bg-orange-500/10 border-orange-500/50 hover:bg-orange-500/20 text-orange-500 shadow-[0_0_20px_rgba(234,88,12,0.3)]'
-                  : activeTab === 'ai' ? 'bg-purple-500/10 border-purple-500/50 hover:bg-purple-500/20 text-purple-500 shadow-[0_0_20px_rgba(147,51,234,0.3)]'
-                    : activeTab === 'faq' ? 'bg-blue-500/10 border-blue-500/50 hover:bg-blue-500/20 text-blue-500 shadow-[0_0_20px_rgba(59,130,246,0.3)]'
-                      : 'bg-green-500/10 border-green-500/50 hover:bg-green-500/20 text-green-500 shadow-[0_0_20px_rgba(34,197,94,0.3)]'
+                className={`fixed bottom-6 right-6 md:bottom-8 md:right-8 z-[100] flex items-center gap-2 px-5 py-3 rounded-full shadow-2xl backdrop-blur-xl transition-all border group cursor-pointer ${activeTab === 'faq' ? 'bg-blue-500/10 border-blue-500/50 hover:bg-blue-500/20 text-blue-500 shadow-[0_0_20px_rgba(59,130,246,0.3)]'
+                  : 'bg-green-500/10 border-green-500/50 hover:bg-green-500/20 text-green-500 shadow-[0_0_20px_rgba(34,197,94,0.3)]'
                   }`}
               >
                 <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
